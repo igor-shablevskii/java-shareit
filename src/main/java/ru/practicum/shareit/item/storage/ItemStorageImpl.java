@@ -9,14 +9,17 @@ import java.util.stream.Collectors;
 @Repository
 public class ItemStorageImpl implements ItemStorage {
     private final Map<Long, Item> items;
+    private long itemId;
 
     public ItemStorageImpl() {
         this.items = new HashMap<>();
+        this.itemId = 0;
     }
 
     @Override
     public Item create(Item item) {
-        items.put(item.getId(), item);
+        item.setId(++itemId);
+        items.put(itemId, item);
         return item;
     }
 

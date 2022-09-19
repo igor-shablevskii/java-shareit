@@ -6,7 +6,7 @@ import ru.practicum.shareit.error.ConflictException;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.UserMapper;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
@@ -16,19 +16,16 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
-    private long userId;
 
     @Autowired
     public UserServiceImpl(UserStorage storage) {
         this.userStorage = storage;
-        this.userId = 0;
     }
 
     @Override
     public UserDto create(UserDto userDto) {
         checkExistsEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
-        user.setId(++userId);
         userStorage.create(user);
         return UserMapper.toUserDto(user);
     }
@@ -49,8 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User delete(Long userId) {
-        return userStorage.delete(userId);
+    public UserDto delete(Long userId) {
+        return UserMapper.toUserDto(userStorage.delete(userId));
     }
 
     @Override

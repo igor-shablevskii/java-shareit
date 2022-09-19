@@ -8,7 +8,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.util.ItemMapper;
+import ru.practicum.shareit.item.ItemMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,20 +19,17 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
-    private long itemId;
 
     @Autowired
     public ItemServiceImpl(ItemStorage itemStorage, UserStorage userStorage) {
         this.itemStorage = itemStorage;
         this.userStorage = userStorage;
-        this.itemId = 0;
     }
 
     @Override
     public ItemDto create(ItemDto itemDto, Long userId) {
         checkExistsUser(userId);
         Item item = ItemMapper.toItem(itemDto, userId);
-        item.setId(++itemId);
         item.setOwnerId(userId);
         itemStorage.create(item);
         return ItemMapper.toItemDto(item);
@@ -60,9 +57,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item delete(Long itemId) {
+    public ItemDto delete(Long itemId) {
         checkExistsItem(itemId);
-        return itemStorage.delete(itemId);
+        return ItemMapper.toItemDto(itemStorage.delete(itemId));
     }
 
     @Override

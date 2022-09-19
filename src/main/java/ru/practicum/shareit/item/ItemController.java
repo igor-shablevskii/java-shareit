@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.util.Create;
 
@@ -42,7 +41,7 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     public void delete(@PathVariable Long itemId) {
-        Item removedItem = itemService.delete(itemId);
+        ItemDto removedItem = itemService.delete(itemId);
         log.info("Delete {}", removedItem);
     }
 

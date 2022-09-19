@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.Create;
 
@@ -39,7 +38,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable Long userId) {
-        User removedUser = userService.delete(userId);
+        UserDto removedUser = userService.delete(userId);
         log.info("Delete {}", removedUser);
     }
 
