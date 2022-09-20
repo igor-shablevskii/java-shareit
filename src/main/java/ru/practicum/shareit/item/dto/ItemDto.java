@@ -22,14 +22,4 @@ public class ItemDto {
     @NotNull(groups = {Create.class})
     @AssertTrue(groups = {Create.class})
     private Boolean available;
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", available=" + available +
-                '}';
-    }
 }

@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,19 +18,11 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDto {
+public class BookingResponseDto {
     private Long id;
-    @NotNull
-    private Long itemId;
-    @NotNull
-    @FutureOrPresent
+    private BookingStatus status;
     private LocalDateTime start;
-    @NotNull
-    @FutureOrPresent
     private LocalDateTime end;
-
-    @AssertTrue
-    private boolean isAfter() {
-        return end.isAfter(start);
-    }
+    private Item item;
+    private User booker;
 }

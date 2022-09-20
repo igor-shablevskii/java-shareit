@@ -1,20 +1,31 @@
 package ru.practicum.shareit.item.service;
 
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.item.dto.comment.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
 public interface ItemService {
 
-    ItemDto create(ItemDto itemDto, Long userId);
+    @Transactional
+    ItemDto create(Long id, ItemDto itemDto);
 
-    ItemDto update(ItemDto itemDto, Long itemId, Long userId);
+    @Transactional
+    ItemDto update(Long id, ItemDto itemDto, Long itemId);
 
-    ItemDto delete(Long itemId);
+    ItemBookingDto getItemDtoById(Long userId, Long id);
 
-    ItemDto find(Long itemId);
+    Item getItemById(Long itemId);
 
-    List<ItemDto> findAllOwnerItems(Long userId);
+    List<ItemBookingDto> getAllItemsDtoOfUser(Long id);
 
-    List<ItemDto> search(String text, Long userId);
+    List<Item> getAllItemsOfUser(Long id);
+
+    List<ItemDto> searchItemsByNameOrDescription(String text);
+
+    @Transactional
+    CommentDto createComment(Long id, Long itemId, CommentDto commentDto);
 }

@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.error.ConflictException;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -10,69 +10,59 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
+    private final UserStorage storage;
 
     @Autowired
     public UserServiceImpl(UserStorage storage) {
-        this.userStorage = storage;
+        this.storage = storage;
     }
 
     @Override
+    @Transactional
     public UserDto create(UserDto userDto) {
-        checkExistsEmail(userDto.getEmail());
-        User user = UserMapper.toUser(userDto);
-        userStorage.create(user);
+        final User user = UserMapper.toUser(userDto);
+        storage.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto update(Long userId, UserDto userDto) {
-        checkExistsUser(userId);
-        checkExistsEmail(userDto.getEmail());
-        User user = userStorage.find(userId);
+        final User user = storage.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id = %d not found", userId)));
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        userStorage.update(user);
+        storage.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto delete(Long userId) {
-        return UserMapper.toUserDto(userStorage.delete(userId));
+        final User user = storage.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id = %d not found", userId)));
+        storage.delete(user);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto find(Long userId) {
-        checkExistsUser(userId);
-        return UserMapper.toUserDto(userStorage.find(userId));
+        final User user = storage.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id = %d not found", userId)));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> findAll() {
-        return userStorage.findAll()
-                .stream()
-                .map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
-    }
-
-    private void checkExistsUser(Long userId) {
-        if (!userStorage.existsById(userId)) {
-            throw new NotFoundException(String.format("User with id = %d not found", userId));
-        }
-    }
-
-    private void checkExistsEmail(String email) {
-        if (userStorage.checkEmail(email)) {
-            throw new ConflictException(String.format("Email %s already exists", email));
-        }
+        return UserMapper.toUserDtoList(storage.findAll());
     }
 }

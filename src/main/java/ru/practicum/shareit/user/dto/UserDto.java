@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.*;
 import ru.practicum.shareit.util.Create;
+import ru.practicum.shareit.util.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -18,15 +19,6 @@ public class UserDto {
     @Size(groups = {Create.class}, min = 2, message = "user name should have at least 2 characters")
     private String name;
     @NotEmpty(groups = {Create.class})
-    @Email(groups = {Create.class}, regexp = "^(.+)@(\\S+)$")
+    @Email(groups = {Create.class, Update.class}, regexp = "^(.+)@(\\S+)$")
     private String email;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }
