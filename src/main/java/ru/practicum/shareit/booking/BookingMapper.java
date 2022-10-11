@@ -40,8 +40,8 @@ public class BookingMapper {
                 booking.getStatus(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getItem(),
-                booking.getBooker()
+                new BookingResponseDto.Item(booking.getItem().getId(), booking.getItem().getName()),
+                new BookingResponseDto.User(booking.getBooker().getId())
         );
     }
 
