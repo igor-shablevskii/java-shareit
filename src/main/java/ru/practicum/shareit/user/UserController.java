@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.util.Create;
+import ru.practicum.shareit.util.Update;
 
 import java.util.List;
 
@@ -23,14 +24,14 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@RequestBody @Validated(Create.class) UserDto useDto) {
+    public UserDto create(@RequestBody @Validated({Create.class}) UserDto useDto) {
         UserDto createdUserDto = userService.create(useDto);
         log.info("Created {}", createdUserDto);
         return createdUserDto;
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@PathVariable Long userId, @RequestBody UserDto userDto) {
+    public UserDto update(@PathVariable Long userId, @RequestBody @Validated({Update.class}) UserDto userDto) {
         UserDto updatedUserDto = userService.update(userId, userDto);
         log.info("Updated {}", updatedUserDto);
         return updatedUserDto;

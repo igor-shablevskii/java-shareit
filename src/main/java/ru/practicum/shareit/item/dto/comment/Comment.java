@@ -1,10 +1,11 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.dto.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,18 +24,19 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", length = 200)
-    private String name;
-    @Column(name = "description", length = 1000)
-    private String description;
-    @Column(name = "is_available")
-    private Boolean available;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @Column(name = "text", nullable = false, length = 10000)
+    private String text;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created = LocalDateTime.now();
 }
