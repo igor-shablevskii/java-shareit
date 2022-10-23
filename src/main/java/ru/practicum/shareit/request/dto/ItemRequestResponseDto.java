@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.util.Create;
+import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemRequestDto {
+public class ItemRequestResponseDto {
     private Long id;
-    @NotNull(groups = {Create.class})
     private String description;
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
+    private List<ItemDto> items;
 }

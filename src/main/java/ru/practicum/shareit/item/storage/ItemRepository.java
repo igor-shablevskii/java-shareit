@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,11 +15,11 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select i from Item i where i.owner.id = ?1")
-    List<Item> findByOwnerId(Long id);
+    List<Item> findByOwnerId(Long id, Pageable pageable);
 
     @Query("select i from Item i where i.available=true and (upper(i.name) like upper(concat('%', ?1, '%')) or " +
             "upper(i.description) like upper(concat('%', ?1, '%')))")
-    List<Item> searchItemsByNameOrDescription(String text);
+    List<Item> searchItemsByNameOrDescription(String text, Pageable pageable);
 
     @Query("select b from Booking b where b.item.owner.id = ?1 and b.item.id = ?2 and b.end<?3")
     List<Booking> findLastBooking(Long userId, Long itemId, LocalDateTime now, Sort sort);
@@ -27,4 +28,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Booking> findNextBooking(Long userId, Long itemId, LocalDateTime now, Sort sort);
 
     Optional<Item> findByIdAndOwnerId(Long id, Long ownerId);
+
+    @Query("select i from Item i where i.request.id = ?1")
+    List<Item> findAllItemsByRequest(Long id);
 }

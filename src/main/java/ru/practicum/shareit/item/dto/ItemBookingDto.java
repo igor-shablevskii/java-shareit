@@ -13,10 +13,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class ItemBookingDto {
     private Long id;
     private String name;
