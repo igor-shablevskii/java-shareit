@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.BookingState;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.error.IncorrectStateException;
 import ru.practicum.shareit.error.NoAccessToSeeBookingException;
 import ru.practicum.shareit.error.NotFoundException;
@@ -29,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
-    private final BookingRepository bookingRepository;
+    private final BookingStorage bookingStorage;
     private final UserService userService;
     private final ItemService itemService;
 
@@ -42,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Item own this user");
         }
         if (item.getAvailable()) {
-            Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, item, user));
+            Booking booking = bookingStorage.save(BookingMapper.toBooking(bookingDto, item, user));
             return BookingMapper.toBookingResponseDto(booking);
         } else {
             throw new UnavailableItemException("Item not available");
@@ -52,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto approveBooking(Long userId, Long bookingId, Boolean isApproved) {
-        Booking booking = bookingRepository.findById(bookingId)
+        Booking booking = bookingStorage.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
         Item item = itemService.getItemById(booking.getItem().getId());
         userService.find(userId);
@@ -70,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
                     throw new IncorrectStateException("Already Rejected");
                 }
             }
-            bookingRepository.save(booking);
+            bookingStorage.save(booking);
             return BookingMapper.toBookingResponseDto(booking);
         } else {
             throw new NoAccessToSeeBookingException("No access for to view booking");
@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto find(Long userId, Long bookingId) {
         userService.find(userId);
-        Booking booking = bookingRepository.findById(bookingId)
+        Booking booking = bookingStorage.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
         Item item = itemService.getItemById(booking.getItem().getId());
         if (item.getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId)) {
@@ -96,26 +96,26 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findAllByBookerId(userId, pageRequest);
+                bookings = bookingStorage.findAllByBookerId(userId, pageRequest);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(userId,
+                bookings = bookingStorage.findByBookerIdAndStartBeforeAndEndAfter(userId,
                         LocalDateTime.now(), LocalDateTime.now(), pageRequest);
                 break;
             case PAST:
-                bookings = bookingRepository.findByBookerIdAndEndBefore(userId,
+                bookings = bookingStorage.findByBookerIdAndEndBefore(userId,
                         LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByBookerIdAndStartAfter(userId,
+                bookings = bookingStorage.findByBookerIdAndStartAfter(userId,
                         LocalDateTime.now(), pageRequest);
                 break;
             case WAITING:
-                bookings = bookingRepository.findByBookerIdAndStatus(userId,
+                bookings = bookingStorage.findByBookerIdAndStatus(userId,
                         BookingStatus.WAITING, pageRequest);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByBookerIdAndStatus(userId,
+                bookings = bookingStorage.findByBookerIdAndStatus(userId,
                         BookingStatus.REJECTED, pageRequest);
                 break;
         }
@@ -129,26 +129,26 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findAllByItemOwnerId(userId, pageRequest);
+                bookings = bookingStorage.findAllByItemOwnerId(userId, pageRequest);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByItemOwnerIdAndStartBeforeAndEndAfter(userId,
+                bookings = bookingStorage.findByItemOwnerIdAndStartBeforeAndEndAfter(userId,
                         LocalDateTime.now(), LocalDateTime.now(), pageRequest);
                 break;
             case PAST:
-                bookings = bookingRepository.findByItemOwnerIdAndEndBefore(userId,
+                bookings = bookingStorage.findByItemOwnerIdAndEndBefore(userId,
                         LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByItemOwnerIdAndStartAfter(userId,
+                bookings = bookingStorage.findByItemOwnerIdAndStartAfter(userId,
                         LocalDateTime.now(), pageRequest);
                 break;
             case WAITING:
-                bookings = bookingRepository.findByItemOwnerIdAndStatus(userId,
+                bookings = bookingStorage.findByItemOwnerIdAndStatus(userId,
                         BookingStatus.WAITING, pageRequest);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByItemOwnerIdAndStatus(userId,
+                bookings = bookingStorage.findByItemOwnerIdAndStatus(userId,
                         BookingStatus.REJECTED, pageRequest);
                 break;
         }

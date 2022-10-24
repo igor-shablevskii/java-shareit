@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface BookingStorage extends JpaRepository<Booking, Long> {
 
     @Query("select b from Booking b where b.booker.id = ?1 and b.item.id = ?2 and b.end < ?3")
     Booking findBooking(Long id, Long itemId, LocalDateTime now);

@@ -45,7 +45,7 @@ public class ItemRequestControllerTest {
                 LocalDateTime.now().withNano(0));
         ItemDto itemDto = new ItemDto(1L, "item1", "description1", true, 1L);
         itemRequestResponseDto = new ItemRequestResponseDto(1L, "descriptionResponse",
-                LocalDateTime.now().withNano(0), Collections.singletonList(itemDto));
+                LocalDateTime.now().withNano(0), null);
         pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "created"));
     }
 

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ItemRepository extends JpaRepository<Item, Long> {
+public interface ItemStorage extends JpaRepository<Item, Long> {
     @Query("select i from Item i where i.owner.id = ?1")
     List<Item> findByOwnerId(Long id, Pageable pageable);
 
@@ -31,4 +31,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("select i from Item i where i.request.id = ?1")
     List<Item> findAllItemsByRequest(Long id);
+
+    void deleteItemByIdAndOwnerId(Long id, Long ownerId);
 }

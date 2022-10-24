@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,5 +20,18 @@ public class ItemRequestResponseDto {
     private Long id;
     private String description;
     private LocalDateTime created;
-    private List<ItemDto> items;
+    private List<Item> items;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode
+    public static class Item {
+        private Long id;
+        private String name;
+        private String description;
+        private boolean available;
+        private Long requestId;
+    }
 }
