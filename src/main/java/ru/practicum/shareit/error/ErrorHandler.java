@@ -41,6 +41,12 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIncorrectDateException(IncorrectDateException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectIdException(IncorrectIdException e) {
         return new ErrorResponse(e.getMessage());
     }

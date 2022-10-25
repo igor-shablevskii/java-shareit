@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.comment.dto.CommentDto;
@@ -11,6 +12,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.util.Create;
 import ru.practicum.shareit.util.Update;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -50,15 +53,25 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemBookingDto> getAllItemsDtoOfUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        List<ItemBookingDto> listFoundItemBookingDto = itemService.getAllItemsDtoOfUser(userId);
+    public List<ItemBookingDto> getAllItemsDtoOfUser(
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        int page = from / size;
+        final PageRequest pageRequest = PageRequest.of(page, size);
+        List<ItemBookingDto> listFoundItemBookingDto = itemService.getAllItemsDtoOfUser(userId, pageRequest);
         log.info("Found for owner id={} {}", userId, listFoundItemBookingDto);
         return listFoundItemBookingDto;
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItemsByNameOrDescription(@RequestParam String text) {
-        return itemService.searchItemsByNameOrDescription(text);
+    public List<ItemDto> searchItemsByNameOrDescription(
+            @RequestParam String text,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        int page = from / size;
+        final PageRequest pageRequest = PageRequest.of(page, size);
+        return itemService.searchItemsByNameOrDescription(text, pageRequest);
     }
 
     @PostMapping("/{itemId}/comment")

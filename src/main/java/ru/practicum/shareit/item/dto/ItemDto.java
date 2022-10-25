@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class ItemDto {
     private Long id;
     @NotEmpty(groups = {Create.class})
@@ -22,4 +23,5 @@ public class ItemDto {
     @NotNull(groups = {Create.class})
     @AssertTrue(groups = {Create.class})
     private Boolean available;
+    private Long requestId;
 }
