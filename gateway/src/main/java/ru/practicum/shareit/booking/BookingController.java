@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.error.IncorrectDateException;
 import ru.practicum.shareit.error.IncorrectStateException;
 
 import javax.validation.constraints.Positive;
@@ -31,6 +32,9 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long id,
                                          @Validated @RequestBody BookingDto bookingDto) {
+        if (!bookingDto.getStart().isBefore(bookingDto.getEnd())) {
+            throw new IncorrectDateException("Incorrect Date");
+        }
         return bookingClient.createNewBooking(bookingDto, id);
     }
 

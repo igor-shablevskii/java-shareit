@@ -22,6 +22,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -140,21 +141,4 @@ public class BookingControllerTest {
                 .getAllBookingsOfCurrentUserItems(1L, BookingState.ALL,
                         pageRequest);
     }
-
-//    @Test
-//    void checkDatesTest() throws Exception {
-//        BookingDto bookingDto1 = new BookingDto(
-//                1L,
-//                1L,
-//                LocalDateTime.of(2023, 5, 5, 5, 5),
-//                LocalDateTime.of(2022, 12, 5, 5, 5));
-//        when(bookingService.create(bookingDto1, 1L)).thenThrow(IncorrectDateException.class);
-//        mockMvc.perform(post("/bookings")
-//                        .header("X-Sharer-User-Id", 1L)
-//                        .content(objectMapper.writeValueAsString(bookingDto1))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
-//        verify(bookingService, times(0)).create(bookingDto1, 1L);
-//    }
 }
