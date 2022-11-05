@@ -51,13 +51,8 @@ public class BookingController {
             @RequestParam(required = false, defaultValue = "ALL") String state,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        try {
-            BookingState bookingState = BookingState.valueOf(state);
-            return bookingClient.getAllBookingsByUserId(id, bookingState, from, size);
-        } catch (IllegalArgumentException e) {
-            throw new IncorrectStateException("Unknown state: " + state);
-        }
-
+        BookingState bookingState = getBookingState(state);
+        return bookingClient.getAllBookingsByUserId(id, bookingState, from, size);
     }
 
     @GetMapping("/{bookingId}")
@@ -72,11 +67,12 @@ public class BookingController {
             @RequestParam(required = false, defaultValue = "ALL") String state,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        try {
-            BookingState bookingState = BookingState.valueOf(state);
-            return bookingClient.getAllBookingsOfCurrentUserItems(id, bookingState, from, size);
-        } catch (IllegalArgumentException e) {
-            throw new IncorrectStateException("Unknown state: " + state);
-        }
+        BookingState bookingState = getBookingState(state);
+        return bookingClient.getAllBookingsOfCurrentUserItems(id, bookingState, from, size);
+    }
+
+    private BookingState getBookingState(String state) {
+        return BookingState.from(state)
+                .orElseThrow(() -> new IncorrectStateException("Unknown state: " + state));
     }
 }
